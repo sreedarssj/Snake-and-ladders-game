@@ -7,7 +7,18 @@ const Room = (props) => {
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          props.setJoinedRoom(true);
+          // props.setJoinedRoom(true);
+          if (props.socket && props.roomId && props.roomId.trim() !== "") {
+            props.socket.emit("joined_room", { roomId: props.roomId });
+            props.socket.on("room_joined", (data) => {
+              if (!data) {
+                //throw error
+                alert("You can't join this room");
+              }
+              console.log(data);
+              props.setJoinedRoom(data);
+            });
+          }
         }}
       >
         <h4 className="text-center text-primary">Room ID</h4>
