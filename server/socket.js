@@ -11,6 +11,18 @@ module.exports = (httpServer) => {
   io.on("connection", (socket) => {
     console.log(socket.id);
 
+
+    socket.on ("update_game", (data) => {
+      const socketRooms = Array.from(socket.rooms.values()).filter(
+        (r) => r !== socket.id
+      );
+
+      const gameRoom = socketRooms && socketRooms[0];
+
+      socket.to(gameRoom).emit("on_game_update", data);
+
+    });
+
     socket.on("joined_room", (data) => {
       //   console.log(data);
       const connectSockets = io.sockets.adapter.rooms.get(data.roomId);
